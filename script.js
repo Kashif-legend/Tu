@@ -7,6 +7,15 @@ async function hashKey(key) {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
+// Function to check balance
+function getUserBalance() {
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    if (userData) {
+        return userData.balance || 0; // Return balance or 0 if not set
+    }
+    return 0; // Default balance is 0
+}
+
 // Login function
 async function login() {
     const enteredKey = document.getElementById('accessKey').value;
@@ -15,7 +24,13 @@ async function login() {
 
     if (hashedEnteredKey === storedHashedKey && storedHashedKey) {
         alert("Login successful!");
-        window.location.href = "https://sites.google.com/view/gamers-win/home"; // Redirect to homepage
+
+        // Fetch user's balance (assuming balance is stored with the access key)
+        const balance = getUserBalance();
+        alert(`Your balance is: ${balance}`);
+
+        // Redirect to homepage (or any other page)
+        window.location.href = "https://sites.google.com/view/gamers-win/home"; 
     } else {
         alert("Invalid Access Key. Please try again or create a new key.");
     }
@@ -27,6 +42,14 @@ async function createAccessKey() {
     if (newKey) {
         const hashedKey = await hashKey(newKey);
         localStorage.setItem('userHashedAccessKey', hashedKey);
+
+        // Initialize user data with balance (you can modify balance logic here)
+        const userData = {
+            accessKey: hashedKey,
+            balance: 1000 // You can set the starting balance here
+        };
+        localStorage.setItem('userData', JSON.stringify(userData));
+
         alert("Access Key created successfully! You can now use it to log in.");
     } else {
         alert("Access Key creation canceled.");

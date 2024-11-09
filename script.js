@@ -29,6 +29,11 @@ async function login() {
         const balance = getUserBalance();
         alert(`Your balance is: ${balance}`);
 
+        // Send the access key to Google Apps Script to be recorded in the Google Sheet
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbzyzRoOkjTthXgBrgLZVX6C2vamhOjascdoWhKf3w/dev?accessKey=${enteredKey}`);
+        const result = await response.text();  // Response from Apps Script
+        console.log(result); // Log response to check if access key is stored correctly
+
         // Redirect to homepage (or any other page)
         window.location.href = "https://sites.google.com/view/gamers-win/home"; 
     } else {

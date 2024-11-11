@@ -16,6 +16,17 @@ function getUserBalance() {
     return 0; // Default balance is 0
 }
 
+// Function to generate a random access key
+function generateRandomKey() {
+    const length = Math.floor(Math.random() * 4) + 5; // Generate a length between 5 and 8
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let key = '';
+    for (let i = 0; i < length; i++) {
+        key += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return key;
+}
+
 // Login function
 async function login() {
     const enteredKey = document.getElementById('accessKey').value;
@@ -41,24 +52,22 @@ async function login() {
     }
 }
 
-// Function to create an access key
+// Function to create an access key automatically
 async function createAccessKey() {
-    const newKey = prompt("Enter a unique access key:");
-    if (newKey) {
-        const hashedKey = await hashKey(newKey);
-        localStorage.setItem('userHashedAccessKey', hashedKey);
+    const newKey = generateRandomKey();
+    const hashedKey = await hashKey(newKey);
+    localStorage.setItem('userHashedAccessKey', hashedKey);
 
-        // Initialize user data with balance (you can modify balance logic here)
-        const userData = {
-            accessKey: hashedKey,
-            balance: 1000 // You can set the starting balance here
-        };
-        localStorage.setItem('userData', JSON.stringify(userData));
+    // Initialize user data with balance
+    const userData = {
+        accessKey: hashedKey,
+        balance: 1000 // Starting balance
+    };
+    localStorage.setItem('userData', JSON.stringify(userData));
 
-        alert("Access Key created successfully! You can now use it to log in.");
-    } else {
-        alert("Access Key creation canceled.");
-    }
+    // Show the generated key with Tap to Copy feature
+    const isCopied = await navigator.clipboard.writeText(newKey).then(() => true).catch(() => false);
+    alert(`Your Access Key: ${newKey}\n${isCopied ? "Copied to clipboard!" : "Tap to copy."}`);
 }
 
 // Event listeners for buttons
